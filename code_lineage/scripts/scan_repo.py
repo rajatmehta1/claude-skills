@@ -101,8 +101,17 @@ def scan_repo(repo_path: str) -> dict:
 def main():
     parser = argparse.ArgumentParser(description='Scan repository for source files')
     parser.add_argument('repo_path', help='Path to the repository')
-    parser.add_argument('--output', '-o', default='scan_result.json', help='Output JSON path')
+    parser.add_argument('--project-id', default='default', help='Project identifier')
+    parser.add_argument('--repo-id', default=None, help='Repository identifier (defaults to folder name)')
+    parser.add_argument('--output', '-o', default=None, help='Output JSON path')
     args = parser.parse_args()
+
+    if args.repo_id is None:
+        args.repo_id = Path(args.repo_path).resolve().name
+    if args.output is None:
+        out_dir = os.path.join("lineage-output", args.project_id, args.repo_id)
+        os.makedirs(out_dir, exist_ok=True)
+        args.output = os.path.join(out_dir, "scan_result.json")
 
     result = scan_repo(args.repo_path)
     

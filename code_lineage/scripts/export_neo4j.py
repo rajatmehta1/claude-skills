@@ -82,8 +82,11 @@ RETURN count(rel);
 def main():
     parser = argparse.ArgumentParser(description='Export lineage graph for Neo4j')
     parser.add_argument('--input', required=True, help='Path to lineage_graph.json')
-    parser.add_argument('--output-dir', default='neo4j_import')
+    parser.add_argument('--output-dir', default=None)
     args = parser.parse_args()
+
+    if args.output_dir is None:
+        args.output_dir = os.path.join(os.path.dirname(args.input), "neo4j_export")
 
     with open(args.input) as f:
         graph = json.load(f)

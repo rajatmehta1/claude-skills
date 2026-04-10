@@ -257,11 +257,19 @@ def assemble(input_dir: str, project_id: str, repo_id: str) -> dict:
 
 def main():
     parser = argparse.ArgumentParser(description='Assemble extraction JSONs into unified graph')
-    parser.add_argument('--input-dir', required=True, help='Directory with per-file extraction JSONs')
+    parser.add_argument('--input-dir', default=None, help='Directory with per-file extraction JSONs')
     parser.add_argument('--project-id', required=True)
     parser.add_argument('--repo-id', required=True)
-    parser.add_argument('--output', '-o', default='lineage_graph.json')
+    parser.add_argument('--output', '-o', default=None)
     args = parser.parse_args()
+
+    out_dir = os.path.join("lineage-output", args.project_id, args.repo_id)
+    os.makedirs(out_dir, exist_ok=True)
+
+    if args.input_dir is None:
+        args.input_dir = os.path.join(out_dir, "extractions")
+    if args.output is None:
+        args.output = os.path.join(out_dir, "lineage_graph.json")
 
     result = assemble(args.input_dir, args.project_id, args.repo_id)
 

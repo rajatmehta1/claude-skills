@@ -263,8 +263,11 @@ FILE_FORMAT = (TYPE = 'CSV' FIELD_OPTIONALLY_ENCLOSED_BY = '"' SKIP_HEADER = 1);
 def main():
     parser = argparse.ArgumentParser(description='Export lineage graph for Snowflake')
     parser.add_argument('--input', required=True, help='Path to lineage_graph.json')
-    parser.add_argument('--output-dir', default='snowflake_import')
+    parser.add_argument('--output-dir', default=None)
     args = parser.parse_args()
+
+    if args.output_dir is None:
+        args.output_dir = os.path.join(os.path.dirname(args.input), "snowflake_export")
 
     with open(args.input) as f:
         graph = json.load(f)
